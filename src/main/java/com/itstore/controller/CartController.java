@@ -5,7 +5,10 @@ import com.itstore.model.ServiceProduct;
 import com.itstore.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
@@ -30,8 +33,7 @@ public class CartController {
         return "redirect:/products";
     }
 
-    // 傳統表單提交（向下相容）
-    @SuppressWarnings("unchecked")
+    // 傳統表單提交
     @PostMapping("/cart/add")
     public String addToCart(@RequestParam(value = "productId", required = false) String productId, 
                             HttpSession session) {
@@ -39,8 +41,7 @@ public class CartController {
         return "redirect:/cart";
     }
 
-    // AJAX 非同步加入購物車 API（給前端彈出視窗使用）
-    @SuppressWarnings("unchecked")
+    // AJAX 非同步加入購物車 API
     @PostMapping("/api/cart/add")
     @ResponseBody
     public Map<String, Object> apiAddToCart(@RequestParam(value = "productId", required = false) String productId,
@@ -54,6 +55,7 @@ public class CartController {
 
         processAddToCart(productId, session);
 
+        @SuppressWarnings("unchecked")
         List<CartItem> cart = (List<CartItem>) session.getAttribute("cart");
         int totalQuantity = 0;
         long totalPrice = 0;
@@ -71,7 +73,6 @@ public class CartController {
         return response;
     }
 
-    // 封裝共用的加入購物車核心邏輯
     @SuppressWarnings("unchecked")
     private void processAddToCart(String productId, HttpSession session) {
         if (productId == null || productId.trim().isEmpty()) return;
@@ -99,7 +100,6 @@ public class CartController {
         }
     }
 
-    // 調整數量
     @SuppressWarnings("unchecked")
     @PostMapping("/cart/update")
     public String updateQuantity(@RequestParam("productId") String productId,
@@ -131,7 +131,6 @@ public class CartController {
         return "redirect:/cart";
     }
 
-    // 移除單一商品
     @SuppressWarnings("unchecked")
     @PostMapping("/cart/remove")
     public String removeFromCart(@RequestParam("productId") String productId, HttpSession session) {
@@ -152,7 +151,6 @@ public class CartController {
         return "redirect:/cart";
     }
 
-    // 清空購物車
     @PostMapping("/cart/clear")
     public String clearCart(HttpSession session) {
         session.removeAttribute("cart");

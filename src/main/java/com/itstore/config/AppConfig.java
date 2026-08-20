@@ -19,7 +19,7 @@ import java.util.Properties;
 @ComponentScan(basePackages = "com.itstore")
 public class AppConfig implements WebMvcConfigurer {
 
-    // 1. 註冊 JSP ViewResolver 視圖解析器
+    // 註冊 JSP ViewResolver 視圖解析器
     @Bean
     public InternalResourceViewResolver viewResolver() {
         InternalResourceViewResolver resolver = new InternalResourceViewResolver();
@@ -28,7 +28,7 @@ public class AppConfig implements WebMvcConfigurer {
         return resolver;
     }
 
-    // 2. 註冊 DataSource (優先讀取 Render 環境變數，次之讀本地 db.properties)
+    // 註冊 DataSource (優先讀取 Render 環境變數，次之讀本地 db.properties)
     @Bean
     public DataSource dataSource() {
         DriverManagerDataSource ds = new DriverManagerDataSource();
@@ -58,13 +58,13 @@ public class AppConfig implements WebMvcConfigurer {
         return ds;
     }
 
-    // 3. 註冊 JdbcTemplate (Spring 官方資料庫存取工具)
+    // 註冊 JdbcTemplate (Spring 官方資料庫存取工具)
     @Bean
     public JdbcTemplate jdbcTemplate(DataSource dataSource) {
         return new JdbcTemplate(dataSource);
     }
 
-    // 4. 靜態資源映射 (讓 CSS/JS/圖片不被攔截)
+    // 靜態資源映射 (讓 CSS/JS/圖片不被攔截)
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/static/**").addResourceLocations("/static/");
