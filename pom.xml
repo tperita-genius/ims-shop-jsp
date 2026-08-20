@@ -71,6 +71,12 @@
             <version>5.3.1</version>
             <scope>test</scope>
         </dependency>
+        <!-- Jackson Databind: Spring MVC @ResponseBody 轉 JSON 必備 -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.15.2</version>
+        </dependency>
     </dependencies>
 
     <build>

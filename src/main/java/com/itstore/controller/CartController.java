@@ -5,14 +5,14 @@ import com.itstore.model.ServiceProduct;
 import com.itstore.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class CartController {
@@ -30,13 +30,51 @@ public class CartController {
         return "redirect:/products";
     }
 
+    // 傳統表單提交（向下相容）
     @SuppressWarnings("unchecked")
     @PostMapping("/cart/add")
     public String addToCart(@RequestParam(value = "productId", required = false) String productId, 
                             HttpSession session) {
+        processAddToCart(productId, session);
+        return "redirect:/cart";
+    }
+
+    // AJAX 非同步加入購物車 API（給前端彈出視窗使用）
+    @SuppressWarnings("unchecked")
+    @PostMapping("/api/cart/add")
+    @ResponseBody
+    public Map<String, Object> apiAddToCart(@RequestParam(value = "productId", required = false) String productId,
+                                           HttpSession session) {
+        Map<String, Object> response = new HashMap<>();
         if (productId == null || productId.trim().isEmpty()) {
-            return "redirect:/products";
+            response.put("success", false);
+            response.put("message", "無效的商品 ID");
+            return response;
         }
+
+        processAddToCart(productId, session);
+
+        List<CartItem> cart = (List<CartItem>) session.getAttribute("cart");
+        int totalQuantity = 0;
+        long totalPrice = 0;
+        if (cart != null) {
+            for (CartItem item : cart) {
+                totalQuantity += item.getQuantity();
+                totalPrice += item.getSubtotal();
+            }
+        }
+
+        response.put("success", true);
+        response.put("cart", cart);
+        response.put("totalQuantity", totalQuantity);
+        response.put("totalPrice", totalPrice);
+        return response;
+    }
+
+    // 封裝共用的加入購物車核心邏輯
+    @SuppressWarnings("unchecked")
+    private void processAddToCart(String productId, HttpSession session) {
+        if (productId == null || productId.trim().isEmpty()) return;
 
         List<CartItem> cart = (List<CartItem>) session.getAttribute("cart");
         if (cart == null) {
@@ -59,11 +97,9 @@ public class CartController {
                 cart.add(new CartItem(product, 1));
             }
         }
-
-        return "redirect:/cart";
     }
 
-    // 調整數量：action 為 "increase" 或 "decrease"，扣到 0 自動移除
+    // 調整數量
     @SuppressWarnings("unchecked")
     @PostMapping("/cart/update")
     public String updateQuantity(@RequestParam("productId") String productId,
@@ -80,7 +116,7 @@ public class CartController {
                     } else if ("decrease".equalsIgnoreCase(action)) {
                         int newQty = item.getQuantity() - 1;
                         if (newQty <= 0) {
-                            iterator.remove(); // 扣到 0 直接移除
+                            iterator.remove();
                         } else {
                             item.setQuantity(newQty);
                         }
@@ -88,7 +124,6 @@ public class CartController {
                     break;
                 }
             }
-            // 若全部項目都被扣光，直接清空 Session 中的 cart
             if (cart.isEmpty()) {
                 session.removeAttribute("cart");
             }
