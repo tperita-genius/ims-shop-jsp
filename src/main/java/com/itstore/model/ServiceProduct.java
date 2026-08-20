@@ -1,6 +1,6 @@
 package com.itstore.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -13,7 +13,7 @@ public class ServiceProduct implements Serializable {
     private long price;
     private boolean isActive;
     
-    @JsonIgnore
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdAt;
 
     public ServiceProduct() {}
