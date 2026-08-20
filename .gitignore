@@ -1,13 +1,21 @@
-# 1. 忽略 Maven 編譯輸出目錄 (徹底排除 target 內所有 class 與 properties)
+# Maven 編譯與建置產出目錄（必加）
 target/
-**/target/
+*.war
+*.jar
+*.class
 
-# 2. 忽略所有路徑下的 db.properties 機密檔
-**/db.properties
-db.properties
-
-# 3. 忽略 Eclipse 專案檔
+# Eclipse 開發環境設定（避免每台電腦設定衝突）
 .classpath
 .project
 .settings/
-*.class
+.metadata/
+tmp0/
+bin/
+
+# 本地敏感資料庫設定（避免帳密上傳）
+src/main/resources/db.properties
+
+# 系統暫存檔
+.DS_Store
+Thumbs.db
+*.log
