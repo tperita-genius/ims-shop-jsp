@@ -1,0 +1,126 @@
+.page-index {
+    background-image: 
+        radial-gradient(at 0% 0%, rgba(219, 234, 254, 0.6) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(241, 245, 249, 0.8) 0px, transparent 50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+}
+
+.page-index .container {
+    max-width: 880px;
+    width: 100%;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 20px;
+    padding: 56px 40px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.03);
+    text-align: center;
+}
+
+.page-index .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #eff6ff;
+    color: #2563eb;
+    border: 1px solid #bfdbfe;
+    padding: 6px 16px;
+    border-radius: 9999px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    margin-bottom: 20px;
+}
+
+.page-index h1 {
+    font-size: 36px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    margin-bottom: 16px;
+    color: #0f172a;
+}
+
+.page-index .description {
+    font-size: 16px;
+    line-height: 1.7;
+    color: #475569;
+    max-width: 640px;
+    margin: 0 auto 36px auto;
+}
+
+.page-index .tech-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+    margin-bottom: 40px;
+    text-align: left;
+}
+
+.page-index .tech-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 20px;
+    transition: all 0.2s ease;
+}
+
+.page-index .tech-card:hover {
+    background: #ffffff;
+    transform: translateY(-2px);
+    border-color: #93c5fd;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+}
+
+.page-index .tech-card i {
+    font-size: 20px;
+    color: #2563eb;
+    margin-bottom: 10px;
+    display: block;
+}
+
+.page-index .tech-label {
+    font-size: 12px;
+    color: #64748b;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+}
+
+.page-index .tech-value {
+    font-size: 17px;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.page-index .btn-enter {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background: #2563eb;
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 600;
+    text-decoration: none;
+    padding: 15px 32px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+    transition: all 0.2s ease;
+}
+
+.page-index .btn-enter:hover {
+    background: #1d4ed8;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.35);
+}
+
+.page-index .btn-enter i {
+    transition: transform 0.2s ease;
+}
+
+.page-index .btn-enter:hover i {
+    transform: translateX(4px);
+}

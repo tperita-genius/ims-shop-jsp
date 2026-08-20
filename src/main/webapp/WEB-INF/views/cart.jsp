@@ -2,91 +2,119 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>購物車清單 - Tailwind SSR</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>購物車 - IT Store</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- 靜態資源引入 -->
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/common.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/cart.css">
 </head>
-<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col justify-between">
+<body class="page-cart">
 
-  <!-- 頂部導覽列 -->
-  <nav class="bg-slate-900 border-b border-slate-800 sticky top-0 z-50">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex justify-between items-center h-16">
-        <a href="${pageContext.request.contextPath}/" class="text-white font-extrabold text-xl tracking-tight flex items-center space-x-2">
-          <span>🚀 IT Core Service</span>
+    <header class="app-header">
+        <a href="${pageContext.request.contextPath}/" class="logo">
+            <i class="fa-solid fa-cloud"></i> IT Store
         </a>
-        <a href="${pageContext.request.contextPath}/" class="text-slate-300 hover:text-white text-sm font-medium transition-colors">
-          ← 繼續選購商品
-        </a>
-      </div>
-    </div>
-  </nav>
+    </header>
 
-  <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex-grow w-full">
-    <h2 class="text-2xl font-bold text-slate-900 mb-6">🛒 您的預約購物車</h2>
-
-    <c:choose>
-      <c:when test="${empty cartItems}">
-        <div class="bg-white rounded-2xl border border-slate-200 p-12 text-center shadow-sm">
-          <p class="text-slate-500 text-lg mb-6">購物車目前沒有任何服務項目</p>
-          <a href="${pageContext.request.contextPath}/" class="inline-flex bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-6 py-2.5 rounded-xl transition-all shadow">
-            前往瀏覽服務
-          </a>
-        </div>
-      </c:when>
-      <c:otherwise>
-        <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm mb-6">
-          <div class="divide-y divide-slate-100">
-            <c:forEach var="item" items="${cartItems}">
-              <div class="p-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                <div class="flex-grow">
-                  <h4 class="font-bold text-slate-900 text-lg mb-1">${item.product.title}</h4>
-                  <p class="text-xs text-slate-400 font-mono">ID: ${item.product.id}</p>
-                </div>
-
-                <div class="flex items-center justify-between sm:justify-end gap-6 w-full sm:w-auto">
-                  <div class="text-right">
-                    <span class="text-xs text-slate-400 block">數量: ${item.quantity}</span>
-                    <span class="font-bold text-slate-900 text-lg">
-                      NT$ <fmt:formatNumber value="${item.subtotal}" type="number"/>
-                    </span>
-                  </div>
-
-                  <form action="${pageContext.request.contextPath}/cart" method="post">
-                    <input type="hidden" name="action" value="remove">
-                    <input type="hidden" name="productId" value="${item.product.id}">
-                    <button type="submit" class="text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors">
-                      移除
-                    </button>
-                  </form>
-                </div>
-              </div>
-            </c:forEach>
-          </div>
-        </div>
-
-        <div class="bg-white rounded-2xl border border-slate-200 p-6 flex flex-col sm:flex-row justify-between items-center gap-4 shadow-sm">
-          <div>
-            <span class="text-slate-500 text-sm">訂單總金額</span>
-            <div class="text-3xl font-extrabold text-indigo-600">
-              <span class="text-sm font-normal text-slate-500 mr-1">NT$</span>
-              <fmt:formatNumber value="${totalAmount}" type="number"/>
+    <main>
+        <div class="cart-card">
+            <div class="cart-header">
+                <h2><i class="fa-solid fa-bag-shopping"></i> 購物車內容</h2>
+                <c:if test="${not empty sessionScope.cart}">
+                    <form action="${pageContext.request.contextPath}/cart/clear" method="POST" style="margin: 0;">
+                        <button type="submit" class="btn-clear" onclick="return confirm('確定要清空購物車嗎？');">
+                            <i class="fa-solid fa-trash-can"></i> 清空購物車
+                        </button>
+                    </form>
+                </c:if>
             </div>
-          </div>
-          <button onclick="alert('訂單已提交！')" class="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-8 py-3 rounded-xl transition-all shadow-lg hover:shadow-indigo-500/25">
-            確認送出預約
-          </button>
-        </div>
-      </c:otherwise>
-    </c:choose>
-  </main>
 
-  <footer class="bg-white border-t border-slate-200 mt-16 py-6 text-center text-xs text-slate-400">
-    © 2026 IT Service Shop. All rights reserved.
-  </footer>
+            <c:choose>
+                <c:when test="${empty sessionScope.cart}">
+                    <div class="empty-state">
+                        <i class="fa-solid fa-cart-arrow-down"></i>
+                        <p>購物車目前是空的，快去選購服務吧！</p>
+                    </div>
+                </c:when>
+                <c:otherwise>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>服務名稱</th>
+                                <th>單價</th>
+                                <th style="text-align: center; width: 140px;">數量</th>
+                                <th style="text-align: right;">小計</th>
+                                <th style="text-align: center; width: 70px;">移除</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <c:set var="total" value="0" />
+                            <c:forEach var="item" items="${sessionScope.cart}">
+                                <c:set var="total" value="${total + item.subtotal}" />
+                                <tr>
+                                    <td style="font-weight: 600; color: #0f172a;">${item.product.title}</td>
+                                    <td>NT$ <fmt:formatNumber value="${item.product.price}" pattern="#,###" /></td>
+                                    <td style="text-align: center;">
+                                        <div class="qty-control">
+                                            <!-- 減號按鈕 -->
+                                            <form action="${pageContext.request.contextPath}/cart/update" method="POST" style="margin: 0;">
+                                                <input type="hidden" name="productId" value="${item.product.id}" />
+                                                <input type="hidden" name="action" value="decrease" />
+                                                <button type="submit" class="btn-qty" title="減少數量">
+                                                    <i class="fa-solid fa-minus"></i>
+                                                </button>
+                                            </form>
+                                            <span class="qty-display">${item.quantity}</span>
+                                            <!-- 加號按鈕 -->
+                                            <form action="${pageContext.request.contextPath}/cart/update" method="POST" style="margin: 0;">
+                                                <input type="hidden" name="productId" value="${item.product.id}" />
+                                                <input type="hidden" name="action" value="increase" />
+                                                <button type="submit" class="btn-qty" title="增加數量">
+                                                    <i class="fa-solid fa-plus"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                    <td style="text-align: right; font-weight: 700;">
+                                        NT$ <fmt:formatNumber value="${item.subtotal}" pattern="#,###" />
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <form action="${pageContext.request.contextPath}/cart/remove" method="POST" style="margin: 0;">
+                                            <input type="hidden" name="productId" value="${item.product.id}" />
+                                            <button type="submit" class="btn-remove" title="移除此商品">
+                                                <i class="fa-solid fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            </c:forEach>
+                        </tbody>
+                    </table>
+
+                    <div class="total-section">
+                        <span class="total-label">總計金額：</span>
+                        <span class="total-amount">NT$ <fmt:formatNumber value="${total}" pattern="#,###" /></span>
+                    </div>
+                </c:otherwise>
+            </c:choose>
+
+            <div class="actions">
+                <a href="${pageContext.request.contextPath}/products" class="btn-secondary">
+                    <i class="fa-solid fa-arrow-left"></i> 繼續挑選服務
+                </a>
+                <c:if test="${not empty sessionScope.cart}">
+                    <a href="javascript:alert('感謝體驗！本系統為 SSR 技術架構展示平台。');" class="btn-checkout">
+                        <i class="fa-solid fa-credit-card"></i> 前往結帳
+                    </a>
+                </c:if>
+            </div>
+        </div>
+    </main>
 
 </body>
 </html>

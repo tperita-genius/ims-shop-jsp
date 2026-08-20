@@ -1,0 +1,206 @@
+.page-cart main {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 0 24px;
+}
+
+.page-cart .cart-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 32px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.page-cart .cart-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.page-cart .cart-header h2 {
+    font-size: 24px;
+    font-weight: 700;
+    color: #0f172a;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.page-cart table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 24px;
+}
+
+.page-cart th {
+    text-align: left;
+    padding: 12px 16px;
+    background: #f8fafc;
+    color: #64748b;
+    font-size: 13px;
+    font-weight: 600;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.page-cart td {
+    padding: 16px;
+    border-bottom: 1px solid #f1f5f9;
+    font-size: 14px;
+}
+
+.page-cart .total-section {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 16px;
+    margin-top: 24px;
+    padding-top: 16px;
+    border-top: 2px solid #f1f5f9;
+}
+
+.page-cart .total-label {
+    font-size: 16px;
+    color: #64748b;
+    font-weight: 600;
+}
+
+.page-cart .total-amount {
+    font-size: 24px;
+    font-weight: 800;
+    color: #2563eb;
+}
+
+.page-cart .actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 32px;
+}
+
+.page-cart .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #64748b;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+    transition: color 0.2s;
+}
+
+.page-cart .btn-secondary:hover {
+    color: #0f172a;
+}
+
+.page-cart .btn-checkout {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #16a34a;
+    color: #ffffff;
+    text-decoration: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 15px;
+    box-shadow: 0 4px 12px rgba(22, 163, 74, 0.25);
+    transition: all 0.2s;
+}
+
+.page-cart .btn-checkout:hover {
+    background: #15803d;
+}
+
+.page-cart .empty-state {
+    text-align: center;
+    padding: 48px 0;
+    color: #64748b;
+}
+
+.page-cart .empty-state i {
+    font-size: 48px;
+    color: #cbd5e1;
+    margin-bottom: 16px;
+    display: block;
+}
+
+/* 移除與清空按鈕樣式 */
+.page-cart .btn-remove {
+    background: transparent;
+    border: none;
+    color: #ef4444;
+    cursor: pointer;
+    padding: 6px 10px;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    font-size: 14px;
+}
+
+.page-cart .btn-remove:hover {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+.page-cart .btn-clear {
+    background: #fef2f2;
+    color: #ef4444;
+    border: 1px solid #fecaca;
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s ease;
+}
+
+.page-cart .btn-clear:hover {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+/* 數量調整控制列 */
+.page-cart .qty-control {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #f1f5f9;
+    border-radius: 8px;
+    padding: 2px 4px;
+    gap: 4px;
+}
+
+.page-cart .btn-qty {
+    background: transparent;
+    border: none;
+    color: #475569;
+    width: 26px;
+    height: 26px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    transition: all 0.2s ease;
+}
+
+.page-cart .btn-qty:hover {
+    background: #ffffff;
+    color: #2563eb;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.page-cart .qty-display {
+    min-width: 24px;
+    font-weight: 700;
+    color: #0f172a;
+    font-size: 14px;
+    text-align: center;
+}

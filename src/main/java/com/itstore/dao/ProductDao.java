@@ -8,39 +8,42 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
 public class ProductDao {
 
     @Autowired
-    private JdbcTemplate jdbcTemplate; // 由 Spring 自動注入
+    private JdbcTemplate jdbcTemplate;
 
-    private final RowMapper<ServiceProduct> rowMapper = new RowMapper<ServiceProduct>() {
+    private final RowMapper<ServiceProduct> productRowMapper = new RowMapper<ServiceProduct>() {
         @Override
         public ServiceProduct mapRow(ResultSet rs, int rowNum) throws SQLException {
-            Timestamp ts = rs.getTimestamp("created_at");
-            LocalDateTime createdAt = (ts != null) ? ts.toLocalDateTime() : null;
-            return new ServiceProduct(
-                rs.getString("id"),
-                rs.getString("title"),
-                rs.getString("description"),
-                rs.getLong("price"),
-                rs.getBoolean("is_active"),
-                createdAt
-            );
+            ServiceProduct p = new ServiceProduct();
+            p.setId(rs.getString("id"));
+            p.setTitle(rs.getString("title"));
+            p.setDescription(rs.getString("description"));
+            p.setPrice(rs.getLong("price"));
+            p.setIsActive(rs.getBoolean("is_active"));
+            
+            java.sql.Timestamp ts = rs.getTimestamp("created_at");
+            if (ts != null) {
+                p.setCreatedAt(ts.toLocalDateTime());
+            }
+            return p;
         }
     };
 
     public List<ServiceProduct> getAllProducts() {
-        String sql = "SELECT id, title, description, price, is_active, created_at FROM products WHERE is_active = true ORDER BY created_at DESC";
-        return jdbcTemplate.query(sql, rowMapper);
+        // 使用 products 資料表
+        String sql = "SELECT id, title, description, price, is_active, created_at FROM products WHERE is_active = true ORDER BY created_at ASC";
+        return jdbcTemplate.query(sql, productRowMapper);
     }
 
     public ServiceProduct getProductById(String id) {
-        String sql = "SELECT id, title, description, price, is_active, created_at FROM products WHERE id = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
+        // 在 ? 後方加上 ::uuid 進行強制型別轉換
+        String sql = "SELECT id, title, description, price, is_active, created_at FROM products WHERE id = ?::uuid";
+        List<ServiceProduct> list = jdbcTemplate.query(sql, productRowMapper, id);
+        return list.isEmpty() ? null : list.get(0);
     }
 }
