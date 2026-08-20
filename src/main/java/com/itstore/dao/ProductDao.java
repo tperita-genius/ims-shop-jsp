@@ -1,58 +1,46 @@
 package com.itstore.dao;
 
 import com.itstore.model.ServiceProduct;
-import com.itstore.util.DBUtil;
-import java.sql.*;
-import java.util.ArrayList;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Repository;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
+@Repository
 public class ProductDao {
 
-    // 取得所有上架中 (is_active = true) 的商品
-    public List<ServiceProduct> getAllProducts() {
-        List<ServiceProduct> list = new ArrayList<>();
-        String sql = "SELECT id, title, description, price, is_active FROM products WHERE is_active = true ORDER BY created_at DESC";
+    @Autowired
+    private JdbcTemplate jdbcTemplate; // 由 Spring 自動注入
 
-        try (Connection conn = DBUtil.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
-
-            while (rs.next()) {
-                ServiceProduct p = new ServiceProduct(
-                    rs.getString("id"),
-                    rs.getString("title"),
-                    rs.getString("description"),
-                    rs.getLong("price"),
-                    rs.getBoolean("is_active")
-                );
-                list.add(p);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+    private final RowMapper<ServiceProduct> rowMapper = new RowMapper<ServiceProduct>() {
+        @Override
+        public ServiceProduct mapRow(ResultSet rs, int rowNum) throws SQLException {
+            Timestamp ts = rs.getTimestamp("created_at");
+            LocalDateTime createdAt = (ts != null) ? ts.toLocalDateTime() : null;
+            return new ServiceProduct(
+                rs.getString("id"),
+                rs.getString("title"),
+                rs.getString("description"),
+                rs.getLong("price"),
+                rs.getBoolean("is_active"),
+                createdAt
+            );
         }
-        return list;
+    };
+
+    public List<ServiceProduct> getAllProducts() {
+        String sql = "SELECT id, title, description, price, is_active, created_at FROM products WHERE is_active = true ORDER BY created_at DESC";
+        return jdbcTemplate.query(sql, rowMapper);
     }
 
-    // 根據 UUID 取得單一商品
     public ServiceProduct getProductById(String id) {
-        String sql = "SELECT id, title, description, price, is_active FROM products WHERE id::text = ?";
-        try (Connection conn = DBUtil.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, id);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return new ServiceProduct(
-                        rs.getString("id"),
-                        rs.getString("title"),
-                        rs.getString("description"),
-                        rs.getLong("price"),
-                        rs.getBoolean("is_active")
-                    );
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
+        String sql = "SELECT id, title, description, price, is_active, created_at FROM products WHERE id = ?";
+        return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
 }

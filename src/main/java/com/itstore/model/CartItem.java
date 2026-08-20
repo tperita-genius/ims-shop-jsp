@@ -7,24 +7,30 @@ public class CartItem implements Serializable {
 
     private ServiceProduct product;
     private int quantity;
-    private String customRequirement;
 
     public CartItem() {}
 
-    public CartItem(ServiceProduct product, int quantity, String customRequirement) {
+    // 補上這個建構子
+    public CartItem(ServiceProduct product, int quantity) {
         this.product = product;
         this.quantity = quantity;
-        this.customRequirement = customRequirement;
     }
 
-    public ServiceProduct getProduct() { return product; }
-    public void setProduct(ServiceProduct product) { this.product = product; }
+    public ServiceProduct getProduct() {
+        return product;
+    }
 
-    public int getQuantity() { return quantity; }
-    public void setQuantity(int quantity) { this.quantity = quantity; }
+    public void setProduct(ServiceProduct product) {
+        this.product = product;
+    }
 
-    public String getCustomRequirement() { return customRequirement; }
-    public void setCustomRequirement(String customRequirement) { this.customRequirement = customRequirement; }
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
 
     public long getSubtotal() {
         return product != null ? product.getPrice() * quantity : 0;

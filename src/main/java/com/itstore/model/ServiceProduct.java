@@ -1,6 +1,7 @@
 package com.itstore.model;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 public class ServiceProduct implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -9,16 +10,19 @@ public class ServiceProduct implements Serializable {
     private String title;
     private String description;
     private long price;
-    private boolean active;
+    private boolean isActive;
+    private LocalDateTime createdAt;
 
     public ServiceProduct() {}
 
-    public ServiceProduct(String id, String title, String description, long price, boolean active) {
+    // 必須包含這個 6 參數建構子
+    public ServiceProduct(String id, String title, String description, long price, boolean isActive, LocalDateTime createdAt) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.price = price;
-        this.active = active;
+        this.isActive = isActive;
+        this.createdAt = createdAt;
     }
 
     public String getId() { return id; }
@@ -33,6 +37,9 @@ public class ServiceProduct implements Serializable {
     public long getPrice() { return price; }
     public void setPrice(long price) { this.price = price; }
 
-    public boolean isActive() { return active; }
-    public void setActive(boolean active) { this.active = active; }
+    public boolean getIsActive() { return isActive; }
+    public void setIsActive(boolean isActive) { this.isActive = isActive; }
+
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 }
