@@ -1,0 +1,13 @@
+# 1. 忽略 Maven 編譯輸出目錄 (徹底排除 target 內所有 class 與 properties)
+target/
+**/target/
+
+# 2. 忽略所有路徑下的 db.properties 機密檔
+**/db.properties
+db.properties
+
+# 3. 忽略 Eclipse 專案檔
+.classpath
+.project
+.settings/
+*.class
