@@ -1,5 +1,7 @@
 package com.itstore.controller;
 
+import com.itstore.dto.CartItemDto;
+import com.itstore.dto.CartResponseDto;
 import com.itstore.model.CartItem;
 import com.itstore.model.ServiceProduct;
 import com.itstore.service.ProductService;
@@ -12,10 +14,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 @Controller
 public class CartController {
@@ -33,7 +33,6 @@ public class CartController {
         return "redirect:/products";
     }
 
-    // 傳統表單提交
     @PostMapping("/cart/add")
     public String addToCart(@RequestParam(value = "productId", required = false) String productId, 
                             HttpSession session) {
@@ -41,36 +40,41 @@ public class CartController {
         return "redirect:/cart";
     }
 
-    // AJAX 非同步加入購物車 API
+    // AJAX API：回傳強型別 CartResponseDto
     @PostMapping("/api/cart/add")
     @ResponseBody
-    public Map<String, Object> apiAddToCart(@RequestParam(value = "productId", required = false) String productId,
-                                           HttpSession session) {
-        Map<String, Object> response = new HashMap<>();
+    public CartResponseDto apiAddToCart(@RequestParam(value = "productId", required = false) String productId,
+                                        HttpSession session) {
         if (productId == null || productId.trim().isEmpty()) {
-            response.put("success", false);
-            response.put("message", "無效的商品 ID");
-            return response;
+            return new CartResponseDto(false, "無效的商品 ID", 0, 0L, new ArrayList<>());
         }
 
         processAddToCart(productId, session);
 
         @SuppressWarnings("unchecked")
         List<CartItem> cart = (List<CartItem>) session.getAttribute("cart");
+        
+        List<CartItemDto> itemDtos = new ArrayList<>();
         int totalQuantity = 0;
         long totalPrice = 0;
+
         if (cart != null) {
             for (CartItem item : cart) {
-                totalQuantity += item.getQuantity();
-                totalPrice += item.getSubtotal();
+                if (item.getProduct() != null) {
+                    itemDtos.add(new CartItemDto(
+                        item.getProduct().getId(),
+                        item.getProduct().getTitle(),
+                        item.getProduct().getPrice(),
+                        item.getQuantity(),
+                        item.getSubtotal()
+                    ));
+                    totalQuantity += item.getQuantity();
+                    totalPrice += item.getSubtotal();
+                }
             }
         }
 
-        response.put("success", true);
-        response.put("cart", cart);
-        response.put("totalQuantity", totalQuantity);
-        response.put("totalPrice", totalPrice);
-        return response;
+        return new CartResponseDto(true, "加入成功", totalQuantity, totalPrice, itemDtos);
     }
 
     @SuppressWarnings("unchecked")

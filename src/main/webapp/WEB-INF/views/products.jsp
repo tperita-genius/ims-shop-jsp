@@ -121,14 +121,14 @@
             badge.innerText = data.totalQuantity;
             badge.style.display = data.totalQuantity > 0 ? 'inline-block' : 'none';
 
-            // 2. 渲染彈窗清單
+            // 2. 渲染彈窗清單（明確使用 DTO 的 items 欄位）
             list.innerHTML = '';
-            data.cart.forEach(item => {
+            data.items.forEach(item => {
                 const itemDiv = document.createElement('div');
                 itemDiv.className = 'mini-cart-item';
                 itemDiv.innerHTML = `
                     <div>
-                        <div class="mini-cart-item-title">\${item.product.title}</div>
+                        <div class="mini-cart-item-title">\${item.title}</div>
                         <div class="mini-cart-item-meta">數量: \${item.quantity}</div>
                     </div>
                     <div style="font-weight: 700; color: #0f172a;">NT$ \${item.subtotal.toLocaleString()}</div>
@@ -142,7 +142,7 @@
             // 4. 顯示彈窗
             popup.style.display = 'block';
 
-            // 5. 5 秒後自動收起，若再次點選則重置計時
+            // 5. 5 秒後自動關閉
             if (autoCloseTimer) clearTimeout(autoCloseTimer);
             autoCloseTimer = setTimeout(() => {
                 closeMiniCart();
