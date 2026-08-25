@@ -25,8 +25,7 @@
         <div class="cart-card">
             <div class="cart-header">
                 <h2><i class="fa-solid fa-bag-shopping"></i> 購物車內容</h2>
-                <!-- 改寫處：檢查不僅不是 null，且裡面真的有商品才顯示清空按鈕 -->
-                <c:if test="${not empty sessionScope.cart and not sessionScope.cart.empty}">
+                <c:if test="${not empty sessionScope.cart.items}">
                     <form action="${pageContext.request.contextPath}/cart/clear" method="POST" style="margin: 0;">
                         <button type="submit" class="btn-clear" onclick="return confirm('確定要清空購物車嗎？');">
                             <i class="fa-solid fa-trash-can"></i> 清空購物車
@@ -36,8 +35,7 @@
             </div>
 
             <c:choose>
-                <!-- 改寫處：如果 cart 是 null 或是裡面沒商品 (cart.empty) 就顯示空狀態 -->
-                <c:when test="${empty sessionScope.cart or sessionScope.cart.empty}">
+                <c:when test="${empty sessionScope.cart.items}">
                     <div class="empty-state">
                         <i class="fa-solid fa-cart-arrow-down"></i>
                         <p>購物車目前是空的，快去選購服務吧！</p>
@@ -55,7 +53,6 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <!-- 你之前已經成功將這裡加上了 .items，完美！ -->
                             <c:forEach var="item" items="${sessionScope.cart.items}">
                                 <tr>
                                     <td style="font-weight: 600; color: #0f172a;">${item.product.title}</td>
@@ -109,8 +106,7 @@
                 <a href="${pageContext.request.contextPath}/products" class="btn-secondary">
                     <i class="fa-solid fa-arrow-left"></i> 繼續挑選服務
                 </a>
-                <!-- 改寫處：結帳按鈕的顯示邏輯同樣加上 and not sessionScope.cart.empty -->
-                <c:if test="${not empty sessionScope.cart and not sessionScope.cart.empty}">
+                <c:if test="${not empty sessionScope.cart.items}">
                     <a href="javascript:alert('感謝體驗！本系統為 SSR 技術架構展示平台。');" class="btn-checkout">
                         <i class="fa-solid fa-credit-card"></i> 前往結帳
                     </a>
