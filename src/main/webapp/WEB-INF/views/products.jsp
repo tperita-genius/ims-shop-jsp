@@ -71,9 +71,9 @@
                             NT$ <fmt:formatNumber value="${product.price}" pattern="#,###" />
                             <small>/ 週期</small>
                         </div>
-                        <button type="button" class="btn-add" onclick="handleAddToCart('${product.id}')">
-                            <i class="fa-solid fa-plus"></i> 加入
-                        </button>
+                        <button type="button" class="btn-add" onclick="handleAddToCart('${product.id}', this)">
+						    <i class="fa-solid fa-plus"></i> 加入
+						</button>
                     </div>
                 </div>
             </c:forEach>
@@ -83,7 +83,23 @@
     <script>
         let autoCloseTimer = null;
 
-        function handleAddToCart(productId) {
+        function handleAddToCart(productId, buttonElement) {
+            const badge = document.getElementById('cartBadgeCount');
+            
+            // 1. 【備份狀態】紀錄原始的數字與顯示狀態（為了失敗時可以還原）
+            const originalCount = parseInt(badge.innerText) || 0;
+            const originalDisplay = badge.style.display;
+
+            // 2. 【樂觀 UI 更新】假設後端一定會成功，瞬間把數字 +1 並顯示
+            badge.innerText = originalCount + 1;
+            badge.style.display = 'inline-block';
+
+            // 3. 【按鈕防呆】讓被點擊的按鈕瞬間變成 Spinner，防止使用者連點
+            const originalBtnHtml = buttonElement.innerHTML;
+            buttonElement.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> 加入中';
+            buttonElement.disabled = true; 
+
+            // 4. 【背景同步】偷偷向後端發送真實的 API 請求
             const formData = new URLSearchParams();
             formData.append('productId', productId);
 
@@ -97,14 +113,31 @@
             .then(res => res.json())
             .then(data => {
                 if (data.success) {
+                    // 成功：使用後端回傳的「真實精準資料」渲染小彈窗，並校正數字
                     renderMiniCart(data);
                 } else {
+                    // 邏輯失敗（如庫存不足）：觸發還原機制
+                    rollbackOptimisticUI(badge, originalCount, originalDisplay);
                     alert(data.message || '加入失敗');
                 }
             })
             .catch(err => {
                 console.error('Add to cart error:', err);
+                // 網路失敗：觸發還原機制
+                rollbackOptimisticUI(badge, originalCount, originalDisplay);
+                alert('網路連線發生錯誤，請稍後再試。');
+            })
+            .finally(() => {
+                // 無論成功或失敗，都把加入按鈕的外觀與點擊功能恢復
+                buttonElement.innerHTML = originalBtnHtml;
+                buttonElement.disabled = false;
             });
+        }
+
+        // 【錯誤還原小幫手】當背景 API 失敗時，把數字偷偷改回來
+        function rollbackOptimisticUI(badge, originalCount, originalDisplay) {
+            badge.innerText = originalCount;
+            badge.style.display = originalDisplay;
         }
 
         function renderMiniCart(data) {
