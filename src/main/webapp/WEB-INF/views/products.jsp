@@ -22,12 +22,9 @@
         <div class="nav-links">
             <a href="${pageContext.request.contextPath}/cart" class="btn-cart" id="btnCartHeader">
                 <i class="fa-solid fa-cart-shopping"></i> 查看購物車
-                <span class="cart-badge-count" id="cartBadgeCount" style="${empty sessionScope.cart ? 'display:none;' : ''}">
-                    <c:set var="initialCount" value="0" />
-                    <c:forEach var="item" items="${sessionScope.cart}">
-                        <c:set var="initialCount" value="${initialCount + item.quantity}" />
-                    </c:forEach>
-                    ${initialCount}
+                <!-- 改寫處：直接使用 cart.empty 判斷顯示，並用 cart.totalQuantity 拿總數 -->
+                <span class="cart-badge-count" id="cartBadgeCount" ${empty sessionScope.cart or sessionScope.cart.empty ? 'style="display:none;"' : ''}>
+                    ${empty sessionScope.cart ? 0 : sessionScope.cart.totalQuantity}
                 </span>
             </a>
         </div>
