@@ -53,9 +53,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <c:set var="total" value="0" />
-                            <c:forEach var="item" items="${sessionScope.cart}">
-                                <c:set var="total" value="${total + item.subtotal}" />
+                            <c:forEach var="item" items="${sessionScope.cart.items}">
                                 <tr>
                                     <td style="font-weight: 600; color: #0f172a;">${item.product.title}</td>
                                     <td>NT$ <fmt:formatNumber value="${item.product.price}" pattern="#,###" /></td>
@@ -98,7 +96,7 @@
 
                     <div class="total-section">
                         <span class="total-label">總計金額：</span>
-                        <span class="total-amount">NT$ <fmt:formatNumber value="${total}" pattern="#,###" /></span>
+                        <span class="total-amount">NT$ <fmt:formatNumber value="${sessionScope.cart.totalPrice}" pattern="#,###" /></span>
                     </div>
                 </c:otherwise>
             </c:choose>
